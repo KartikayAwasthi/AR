@@ -1,43 +1,36 @@
-import React, { Suspense, useState, useRef } from "react";
+import React from "react";
 import { Canvas } from "@react-three/fiber";
-import { XR, ARButton, Controllers } from "@react-three/xr";
-import { Environment } from "@react-three/drei";
+import { XR, ARButton } from "@react-three/xr";
 import CeilingFanPlacer from "./CeilingFanPlacer";
 
 const ARFanViewer = () => {
   return (
-    <div className="w-full h-screen bg-black relative">
+    <>
       <ARButton
-        sessionInit={{
-          requiredFeatures: ["hit-test", "plane-detection"], // enable ceiling detection
-        }}
+        sessionInit={{ requiredFeatures: ["hit-test", "local-floor"] }}
         style={{
           position: "absolute",
           top: 20,
           left: 20,
-          zIndex: 10,
-          padding: "10px 20px",
-          background: "white",
-          color: "black",
+          zIndex: 2,
+          background: "#000",
+          color: "#fff",
+          padding: "10px 16px",
           borderRadius: "8px",
-          fontWeight: "600",
         }}
       />
 
-      <Canvas camera={{ position: [0, 1.6, 0] }}>
+      <Canvas
+        style={{ height: "100vh", width: "100vw" }}
+        onCreated={({ gl }) => {
+          gl.setClearColor(0x000000, 0);
+        }}
+      >
         <XR>
-          <ambientLight intensity={1.2} />
-          <directionalLight position={[0, 5, 5]} />
-
-          <Suspense fallback={null}>
-            <CeilingFanPlacer modelPath="/models/Lara_Metallic_Brown.glb" />
-          </Suspense>
-
-          <Environment preset="city" />
-          <Controllers />
+          <CeilingFanPlacer />
         </XR>
       </Canvas>
-    </div>
+    </>
   );
 };
 
