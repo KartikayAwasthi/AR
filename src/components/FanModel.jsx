@@ -8,11 +8,14 @@ const FanModel = ({ modelPath, scale }) => {
   const { gl } = useThree();
   const [localScale, setLocalScale] = useState(scale);
 
-  // Handle pinch zoom gesture (mobile AR)
+  // ✅ Fix orientation: canopy faces ceiling
+  scene.rotation.set(-Math.PI / 2, 0, Math.PI); // rotate 180° on Z to flip upside-down
+
+  // ✅ Pinch zoom support
   useGesture(
     {
       onPinch: ({ offset: [distance] }) => {
-        const newScale = Math.min(Math.max(0.2, distance / 100), 2); // limit between 0.2–2x
+        const newScale = Math.min(Math.max(0.2, distance / 100), 2);
         setLocalScale(newScale);
       },
     },
@@ -23,8 +26,7 @@ const FanModel = ({ modelPath, scale }) => {
     <primitive
       object={scene}
       scale={localScale}
-      position={[0, -1, 0]} // slightly above user head like ceiling
-      rotation={[Math.PI / 2, 0, 0]} // ceiling-facing orientation
+      position={[0, -1, 0]} // hanging above
     />
   );
 };
